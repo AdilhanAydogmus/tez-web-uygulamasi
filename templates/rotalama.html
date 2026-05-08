@@ -1,0 +1,621 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<main class="container py-4">
+
+    <div id="loadingOverlay">
+        <div class="spinner-border text-light mb-3" role="status"></div>
+        <h5>Algoritma çalışıyor...</h5>
+        <small>Rotalar hesaplanıyor, lütfen bekleyin.</small>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- SOL PANEL -->
+        <div class="col-md-4">
+
+            <div class="card card-body shadow-sm border-0 bg-body-tertiary">
+
+                <h4 class="card-title mb-3">
+                    İşlem Merkezi
+                </h4>
+
+                <hr class="opacity-50">
+
+                <!-- TEZ VERİSİ -->
+                <div class="mb-4">
+
+                    <label class="form-label small text-secondary fw-bold">
+                        TEZ SENARYOSU
+                    </label>
+
+                    <button
+                        onclick="runTezScenario()"
+                        class="btn btn-primary w-100 py-2 shadow-sm">
+
+                        <i class="bi bi-play-fill me-2"></i>
+                        Hazır Problemi Çalıştır
+
+                    </button>
+
+                </div>
+
+                <!-- KENDİ VERİLERİM -->
+                <div class="mb-4">
+
+                    <label class="form-label small text-secondary fw-bold">
+                        ROTALAMA VERİ DOSYASI
+                    </label>
+
+                    <input
+                        type="file"
+                        id="excelFile"
+                        class="form-control mb-3 shadow-sm">
+
+                    <label class="form-label small text-secondary fw-bold">
+
+                        KÜMELEME SONUÇ DOSYASI
+
+                        <span
+                            title="Kümeleme sayfasından indirdiğiniz sonuç dosyasını yükleyin."
+                            style="
+                                cursor: help;
+                                background: #6c757d;
+                                color: white;
+                                border-radius: 50%;
+                                padding: 1px 6px;
+                                font-size: 12px;
+                                margin-left: 4px;
+                            ">
+                            ?
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="segmentFile"
+                        class="form-control mb-3 shadow-sm">
+
+                    <button
+                        onclick="runCustomScenario()"
+                        class="btn btn-success w-100 py-2 shadow-sm">
+
+                        <i class="bi bi-cpu me-2"></i>
+                        Hesapla ve Çiz
+
+                    </button>
+
+                </div>
+
+                <div>
+                    <a href="/static/ornek_veri.xlsx"
+                       download
+                       class="btn btn-outline-secondary w-100 btn-sm py-2">
+                        Örnek Veri İndir
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- SAĞ PANEL -->
+        <div class="col-md-8">
+
+            <div class="card shadow-sm border-0 bg-body-tertiary mb-4">
+
+                <div class="card-body">
+
+                    <h4 class="fw-bold mb-3">
+                        <i class="bi bi-clipboard-data me-2 text-primary"></i>
+                        Algoritma Sonucu
+                    </h4>
+
+                    <div class="row g-3 mb-3">
+
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-3 bg-dark-subtle border border-secondary-subtle">
+                                <small class="text-body-secondary">Depo</small>
+                                <h5 id="depoText" class="fw-bold text-primary mb-0">1</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-3 bg-dark-subtle border border-secondary-subtle">
+                                <small class="text-body-secondary">Müşteri</small>
+                                <h5 id="customerCountText" class="fw-bold text-primary mb-0">-</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-3 bg-dark-subtle border border-secondary-subtle">
+                                <small class="text-body-secondary">Araç</small>
+                                <h5 id="vehicleCountText" class="fw-bold text-primary mb-0">-</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-3 bg-dark-subtle border border-secondary-subtle">
+                                <small class="text-body-secondary">Toplam Maliyet</small>
+                                <h5 id="totalDistanceText" class="fw-bold text-primary mb-0">-</h5>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- SERVİS BUTONLARI -->
+                    <div id="serviceButtons"
+                         class="mb-3 d-none">
+
+                        <button class="btn btn-outline-primary btn-sm me-2"
+                                onclick="selectService('s1')">
+                            S1
+                        </button>
+
+                        <button class="btn btn-outline-primary btn-sm me-2"
+                                onclick="selectService('s2')">
+                            S2
+                        </button>
+
+                        <button class="btn btn-outline-primary btn-sm me-2"
+                                onclick="selectService('s3')">
+                            S3
+                        </button>
+
+                        <button class="btn btn-outline-primary btn-sm me-2"
+                                onclick="selectService('s4')">
+                            S4
+                        </button>
+
+                    </div>
+
+                    <h6 id="routeTitle"
+                        class="fw-bold">
+                        Oluşturulan Rotalar
+                    </h6>
+
+                    <pre id="routeText"
+                         class="p-3 rounded-3 bg-dark-subtle border border-secondary-subtle small mb-0"></pre>
+
+                </div>
+
+            </div>
+
+            <div id="map"
+                 class="shadow-sm border border-secondary-subtle"
+                 style="height: 700px; border-radius: 14px;">
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+
+    #loadingOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.60);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-direction: column;
+        text-align: center;
+    }
+
+</style>
+
+<script>
+
+const map = L.map("map").setView(
+    [41.02, 28.78],
+    11
+);
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom: 19
+    }
+).addTo(map);
+
+let routeLayers = [];
+let truckIntervals = [];
+let lastResult = null;
+let selectedService = "s1";
+
+const colors = [
+    "#0d6efd",
+    "#dc3545",
+    "#198754",
+    "#fd7e14",
+    "#6f42c1",
+    "#20c997",
+    "#6610f2",
+    "#d63384"
+];
+
+function showLoading() {
+
+    document.getElementById("loadingOverlay").style.display = "flex";
+}
+
+function hideLoading() {
+
+    document.getElementById("loadingOverlay").style.display = "none";
+}
+
+function clearMap() {
+
+    truckIntervals.forEach(interval => clearInterval(interval));
+    truckIntervals = [];
+
+    routeLayers.forEach(layer => {
+        map.removeLayer(layer);
+    });
+
+    routeLayers = [];
+}
+
+function createTruckIcon(color) {
+
+    return L.divIcon({
+
+        className: "vehicle-icon",
+
+        html: `
+            <div style="
+                background:${color};
+                color:white;
+                width:34px;
+                height:34px;
+                border-radius:50%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                border:2px solid white;
+                box-shadow:0 0 9px rgba(0,0,0,0.65);
+                font-size:17px;
+            ">🚚</div>
+        `,
+
+        iconSize: [34, 34],
+        iconAnchor: [17, 17]
+    });
+}
+
+async function runTezScenario() {
+
+    clearMap();
+    showLoading();
+
+    try {
+
+        const response = await fetch("/rotalama/tez");
+
+        const result = await response.json();
+
+        console.log(result);
+
+        if (!response.ok) {
+
+            alert(result.detail || "Hazır problem çalıştırılamadı.");
+            return;
+        }
+
+        lastResult = result;
+
+        selectedService = "s1";
+
+        document.getElementById("serviceButtons")
+            .classList.remove("d-none");
+
+        drawSelectedService();
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert("Sunucuya bağlanılamadı veya işlem sırasında hata oluştu.");
+
+    } finally {
+
+        hideLoading();
+    }
+}
+
+async function runCustomScenario() {
+
+    clearMap();
+
+    const file =
+        document.getElementById("excelFile").files[0];
+
+    const segmentFile =
+        document.getElementById("segmentFile").files[0];
+
+    if (!file) {
+
+        alert("Rotalama Excel dosyası seç");
+        return;
+    }
+
+    if (!segmentFile) {
+
+        alert("Kümeleme sonuç dosyasını seç");
+        return;
+    }
+
+    showLoading();
+
+    try {
+
+        const formData = new FormData();
+
+        formData.append("veri_dosyasi", file);
+        formData.append("kume_dosyasi", segmentFile);
+        formData.append("iterations", 2000);
+
+        const response = await fetch(
+            "/rotalama/kendi-verilerim",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const result = await response.json();
+
+        console.log(result);
+
+        if (!response.ok) {
+
+            alert(result.detail || "Rotalama çalıştırılamadı.");
+            return;
+        }
+
+        lastResult = {
+            total_cost: result.maliyet,
+            routes: result.rota
+        };
+
+        selectedService = "s1";
+
+        document.getElementById("serviceButtons")
+            .classList.remove("d-none");
+
+        drawSelectedService();
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert("İşlem sırasında hata oluştu.");
+
+    } finally {
+
+        hideLoading();
+    }
+}
+
+function selectService(service) {
+
+    selectedService = service;
+
+    drawSelectedService();
+}
+
+function drawSelectedService() {
+
+    clearMap();
+
+    if (!lastResult || !lastResult.routes) {
+        return;
+    }
+
+    const filteredRoutes = lastResult.routes.filter(
+        route => route.service === selectedService
+    );
+
+    drawRoutes({
+        total_cost: lastResult.total_cost,
+        routes: filteredRoutes
+    });
+}
+
+function drawRoutes(result) {
+
+    const routes = result.routes;
+
+    let routeText = "";
+    let customerSet = new Set();
+    let vehicleSet = new Set();
+    let allPoints = [];
+    let selectedServiceCost = 0;
+
+    routes.forEach(routeData => {
+        selectedServiceCost += routeData.total_cost;
+    });
+
+    document.getElementById("routeTitle").innerText =
+        `${selectedService.toUpperCase()} Servisi İçin Oluşturulan Rotalar`;
+
+    document.getElementById("totalDistanceText").innerText =
+        selectedServiceCost.toFixed(2);
+
+    routes.forEach((routeData, idx) => {
+
+        const color =
+            colors[idx % colors.length];
+
+        vehicleSet.add(routeData.vehicle);
+
+        const latlngs = [];
+
+        routeData.coordinates.forEach((point, pidx) => {
+
+            latlngs.push([
+                point.lat,
+                point.lng
+            ]);
+
+            allPoints.push([
+                point.lat,
+                point.lng
+            ]);
+
+            if (point.id !== "1") {
+                customerSet.add(point.id);
+            }
+
+            if (pidx === 0) {
+
+                const depotMarker = L.marker(
+                    [point.lat, point.lng]
+                ).addTo(map);
+
+                routeLayers.push(depotMarker);
+
+            } else if (pidx !== routeData.coordinates.length - 1) {
+
+                const marker = L.circleMarker(
+                    [point.lat, point.lng],
+                    {
+                        radius: 7,
+                        color: color,
+                        fillColor: color,
+                        fillOpacity: 0.9,
+                        weight: 2
+                    }
+                ).addTo(map);
+
+                routeLayers.push(marker);
+            }
+        });
+
+        const polyline = L.polyline(
+            latlngs,
+            {
+                color: color,
+                weight: 5,
+                opacity: 0.85
+            }
+        ).addTo(map);
+
+        routeLayers.push(polyline);
+
+        animateTruck(latlngs, color);
+
+        routeText += `SERVİS: ${routeData.service.toUpperCase()}\n`;
+        routeText += `ARAÇ: ${routeData.vehicle}\n`;
+        routeText += `ROTA: ${routeData.route.join(" -> ")}\n`;
+        routeText += `MESAFE MALİYETİ: ${routeData.distance_cost.toFixed(2)}\n`;
+        routeText += `LATE MALİYETİ: ${routeData.late_cost.toFixed(2)}\n`;
+        routeText += `TOPLAM ROTA MALİYETİ: ${routeData.total_cost.toFixed(2)}\n`;
+        routeText += `----------------------------------------\n\n`;
+    });
+
+    if (routes.length === 0) {
+
+        routeText =
+            `${selectedService.toUpperCase()} servisi için rota bulunamadı.`;
+    }
+
+    document.getElementById("routeText").innerText =
+        routeText;
+
+    document.getElementById("customerCountText").innerText =
+        customerSet.size;
+
+    document.getElementById("vehicleCountText").innerText =
+        vehicleSet.size;
+
+    if (allPoints.length > 0) {
+
+        map.fitBounds(
+            allPoints,
+            {
+                padding: [30, 30]
+            }
+        );
+    }
+}
+
+function animateTruck(latlngs, color) {
+
+    if (latlngs.length < 2) {
+        return;
+    }
+
+    const truckMarker = L.marker(
+        latlngs[0],
+        {
+            icon: createTruckIcon(color)
+        }
+    ).addTo(map);
+
+    routeLayers.push(truckMarker);
+
+    let segmentIndex = 0;
+    let progress = 0;
+
+    const speed = 0.01;
+
+    const interval = setInterval(() => {
+
+        const start =
+            latlngs[segmentIndex];
+
+        const end =
+            latlngs[segmentIndex + 1];
+
+        if (!end) {
+
+            segmentIndex = 0;
+            progress = 0;
+
+            return;
+        }
+
+        progress += speed;
+
+        if (progress >= 1) {
+
+            progress = 0;
+            segmentIndex++;
+        }
+
+        const lat =
+            start[0] +
+            (end[0] - start[0]) * progress;
+
+        const lng =
+            start[1] +
+            (end[1] - start[1]) * progress;
+
+        truckMarker.setLatLng([lat, lng]);
+
+    }, 40);
+
+    truckIntervals.push(interval);
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tez Projem</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <link rel="icon" type="image/jpg" href="{{ url_for('static', path='images/favicon.jpg') }}">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .card {
+            border-radius: 14px;
+        }
+
+        #map {
+            height: 550px;
+            border-radius: 12px;
+            background-color: #f8f9fa;
+            position: relative;
+            z-index: 1;
+        }
+
+        .leaflet-routing-container {
+            display: none !important;
+        }
+
+        .circle-dot {
+            background-color: #0d6efd;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+        }
+
+        .team-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        }
+
+        .img-wrapper {
+            display: inline-block;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            transition: transform 0.3s ease;
+        }
+
+        .team-card:hover .img-wrapper {
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        .profile-img {
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .result-table {
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="p-3 border-bottom bg-body-tertiary shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <a href="/" class="text-decoration-none">
+            <span class="fs-4 fw-bold text-primary">🚚 Tez Çalışmam</span>
+        </a>
+
+        <div class="d-flex align-items-center">
+            <ul class="nav nav-pills me-3">
+
+               
+
+                <li class="nav-item">
+                    <a href="/lstm-egitimi" class="nav-link {% if request.url.path == '/lstm-egitimi' %}active{% endif %}">
+                        LSTM Model
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/musteri-segmentasyonu" class="nav-link {% if request.url.path == '/musteri-segmentasyonu' %}active{% endif %}">
+                        Müşteri Segmentasyonu
+                    </a>
+                </li>
+                 <li class="nav-item">
+                    <a href="/" class="nav-link {% if request.url.path == '/' %}active{% endif %}">
+                        Algoritma
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/hakkimizda" class="nav-link {% if request.url.path == '/hakkimizda' %}active{% endif %}">
+                        Hakkımızda
+                    </a>
+                </li>
+
+            </ul>
+
+            <div class="dropdown">
+                <button class="btn btn-link nav-link dropdown-toggle" id="bd-theme" data-bs-toggle="dropdown">
+                    <i class="bi bi-circle-half"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li>
+                        <button type="button" class="dropdown-item" data-bs-theme-value="light">
+                            <i class="bi bi-sun-fill me-2"></i>Açık
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item" data-bs-theme-value="dark">
+                            <i class="bi bi-moon-stars-fill me-2"></i>Koyu
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+{% block content %}{% endblock %}
+
+<footer class="py-3 border-top bg-body-tertiary mt-auto text-center">
+    <div class="container">
+        <p class="mb-0 text-body-secondary">© 2026 Gökhan Hocanın Askerleri</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const setTheme = t => {
+        document.documentElement.setAttribute('data-bs-theme', t);
+        localStorage.setItem('theme', t);
+    };
+
+    setTheme(localStorage.getItem('theme') || 'dark');
+
+    document.querySelectorAll('[data-bs-theme-value]').forEach(btn => {
+        btn.addEventListener('click', () => setTheme(btn.getAttribute('data-bs-theme-value')));
+    });
+</script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

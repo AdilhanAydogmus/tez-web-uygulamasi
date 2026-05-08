@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<main class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">Proje Ekibi</h2>
+        <p class="text-secondary">Araç Rotalama Tez Grubu</p>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg bg-primary bg-opacity-10 p-3 team-card">
+                <div class="row g-0 align-items-center text-start">
+                    <div class="col-4 text-center">
+                        <div class="img-wrapper border border-primary p-1">
+                            <img src="/static/images/hoca.webp" class="profile-img" style="width: 100px; height: 100px;" alt="Hoca">
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-1">Doç. Dr. GÖKHAN ÖZÇELİK</h5>
+                            <p class="text-primary small mb-2 fw-semibold">Akademik Danışman</p>
+                            <div class="small text-muted">
+                                <i class="bi bi-envelope-at me-2 text-primary"></i>gozcelik@ktu.edu.tr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% set ekip = [
+            {'isim': 'ADİLHAN AYDOĞMUŞ', 'foto': 'adilhan.jpeg', 'mail': 'adilhanaydogmus23@gmail.com'},
+            {'isim': 'İLAYDA SUDE ATEŞLİ', 'foto': 'ilayda.jpeg', 'mail': 'atessude91@gmail.com'},
+            {'isim': 'BURCU TUNCEL', 'foto': 'burcu.jpeg', 'mail': 'tuncelburcu26@gmail.com'},
+            {'isim': 'ÖYKÜ DENİZ ÖZEL', 'foto': 'oyku.jpeg', 'mail': 'oykudenizozel@gmail.com'}
+        ] %}
+        
+        {% for kisi in ekip %}
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm bg-body-tertiary p-3 team-card">
+                <div class="row g-0 align-items-center text-start">
+                    <div class="col-4 text-center">
+                        <div class="img-wrapper border border-secondary p-1">
+                            <img src="/static/images/{{ kisi.foto }}" class="profile-img" style="width: 80px; height: 80px;" alt="{{ kisi.isim }}">
+                        </div>
+                    </div>
+                    <div class="col-8 pe-2">
+                        <div class="card-body p-2">
+                            <h6 class="fw-bold mb-1">{{ kisi.isim }}</h6>
+                            <p class="small text-secondary mb-2">Endüstri Mühendisi</p>
+                            <div class="small text-truncate text-muted">
+                                <i class="bi bi-envelope-at me-1 text-primary"></i>{{ kisi.mail }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
