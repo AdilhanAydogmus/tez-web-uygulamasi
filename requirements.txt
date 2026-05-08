@@ -10,3 +10,4 @@ tensorflow
 joblib
 matplotlib
 pulp
+seaborn
