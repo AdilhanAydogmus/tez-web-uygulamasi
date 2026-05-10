@@ -32,10 +32,10 @@
 
     <div class="row g-4">
         {% set ekip = [
-            {'isim': 'ADİLHAN AYDOĞMUŞ', 'foto': 'adilhan.jpeg', 'mail': 'adilhanaydogmus23@gmail.com'},
-            {'isim': 'İLAYDA SUDE ATEŞLİ', 'foto': 'ilayda.jpeg', 'mail': 'atessude91@gmail.com'},
-            {'isim': 'BURCU TUNCEL', 'foto': 'burcu.jpeg', 'mail': 'tuncelburcu26@gmail.com'},
-            {'isim': 'ÖYKÜ DENİZ ÖZEL', 'foto': 'oyku.jpeg', 'mail': 'oykudenizozel@gmail.com'}
+            {'isim': 'ADİLHAN AYDOĞMUŞ', 'foto': 'adilhan.jpeg', 'mail': 'adilhanaydogmus23@gmail.com', "Linkedln":"www.linkedin.com/in/adilhan-aydoğmuş"},
+            {'isim': 'İLAYDA SUDE ATEŞLİ', 'foto': 'ilayda.jpeg', 'mail': 'atessude91@gmail.com', "Linkedln":"https://www.linkedin.com/in/ilayda-sude-ate%C5%9Fli"},
+            {'isim': 'BURCU TUNCEL', 'foto': 'burcu.jpeg', 'mail': 'tuncelburcu26@gmail.com', "Linkedln":"https://www.linkedin.com/in/burcu-tuncel"},
+            {'isim': 'ÖYKÜ DENİZ ÖZEL', 'foto': 'oyku.jpeg', 'mail': 'oykudenizozel@gmail.com', "Linkedln":"http://linkedin.com/in/öyküdenizözel"}
         ] %}
         
         {% for kisi in ekip %}
@@ -53,6 +53,9 @@
                             <p class="small text-secondary mb-2">Endüstri Mühendisi</p>
                             <div class="small text-truncate text-muted">
                                 <i class="bi bi-envelope-at me-1 text-primary"></i>{{ kisi.mail }}
+                            </div>
+                            <div class="small text-truncate text-muted">
+                                <i class="bi bi-envelope-at me-1 text-primary"></i>{{ kisi.Linkedln }}
                             </div>
                         </div>
                     </div>
