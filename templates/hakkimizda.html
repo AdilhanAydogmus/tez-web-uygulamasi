@@ -51,12 +51,22 @@
                         <div class="card-body p-2">
                             <h6 class="fw-bold mb-1">{{ kisi.isim }}</h6>
                             <p class="small text-secondary mb-2">Endüstri Mühendisi</p>
-                            <div class="small text-truncate text-muted">
-                                <i class="bi bi-envelope-at me-1 text-primary"></i>{{ kisi.mail }}
-                            </div>
-                            <div class="small text-truncate text-muted">
-                                <i class="bi bi-envelope-at me-1 text-primary"></i>{{ kisi.Linkedln }}
-                            </div>
+                            <div class="small text-truncate">
+    <i class="bi bi-envelope-at me-1 text-primary"></i>
+    <a href="mailto:{{ kisi.mail }}" 
+       class="text-decoration-none text-muted">
+        {{ kisi.mail }}
+    </a>
+</div>
+
+<div class="small text-truncate">
+    <i class="bi bi-linkedin me-1 text-primary"></i>
+    <a href="https://{{ kisi.Linkedln }}" 
+       target="_blank"
+       class="text-decoration-none text-muted">
+        {{ kisi.Linkedln }}
+    </a>
+</div>
                         </div>
                     </div>
                 </div>
