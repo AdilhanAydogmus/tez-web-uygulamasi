@@ -87,6 +87,7 @@ async def rotalama_tez():
     try:
 
         import pandas as pd
+        import ast
 
         excel_path = (
             "static/rotalama_sonuclari/"
@@ -101,39 +102,85 @@ async def rotalama_tez():
 
         for _, row in df.iterrows():
 
+            # =====================================================
+            # ROTA
+            # =====================================================
+
             route_str = str(row["route"])
 
             route_list = [
+
                 x.strip()
+
                 for x in route_str.split("->")
             ]
 
+            # =====================================================
+            # KOORDİNATLAR
+            # =====================================================
+
+            koordinatlar = ast.literal_eval(
+
+                str(row["coordinates"])
+            )
+
             coordinates = []
 
-            for idx, node in enumerate(route_list):
+            for idx, coord in enumerate(koordinatlar):
+
+                node_id = "0"
+
+                if idx < len(route_list):
+
+                    node_id = route_list[idx]
 
                 coordinates.append({
 
-                    "id": node,
+                    "id":
+                        str(node_id),
 
-                    "lat": 41.00 + idx * 0.01,
+                    "lat":
+                        float(coord[0]),
 
-                    "lng": 28.70 + idx * 0.01
+                    "lng":
+                        float(coord[1])
                 })
 
+            # =====================================================
+            # MALİYETLER
+            # =====================================================
+
             route_cost = float(
-                row["total_cost"]
+
+                str(row["total_cost"])
+                .replace(",", ".")
+            )
+
+            distance_cost = float(
+
+                str(row["distance_cost"])
+                .replace(",", ".")
+            )
+
+            late_cost = float(
+
+                str(row["late_cost"])
+                .replace(",", ".")
             )
 
             total_cost += route_cost
 
+            # =====================================================
+            # ROUTE APPEND
+            # =====================================================
+
             routes.append({
 
                 "service":
-                    row["service"],
+                    str(row["service"]),
 
                 "vehicle":
-                    row["vehicle"],
+                    str(row["vehicle"]),
 
                 "route":
                     route_list,
@@ -142,14 +189,18 @@ async def rotalama_tez():
                     coordinates,
 
                 "distance_cost":
-                    float(row["distance_cost"]),
+                    distance_cost,
 
                 "late_cost":
-                    float(row["late_cost"]),
+                    late_cost,
 
                 "total_cost":
                     route_cost
             })
+
+        # =====================================================
+        # RETURN
+        # =====================================================
 
         return {
 
@@ -166,8 +217,11 @@ async def rotalama_tez():
     except Exception as e:
 
         raise HTTPException(
+
             status_code=500,
-            detail=f"Tez rotalama sonucu okunamadı: {str(e)}"
+
+            detail=
+                f"Tez rotalama sonucu okunamadı: {str(e)}"
         )
 # =========================================================
 # KENDİ VERİLERİM İLE ROTALAMA
