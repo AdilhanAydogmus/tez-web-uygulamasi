@@ -633,38 +633,48 @@ function sonuclariGoster(data) {
     document
         .getElementById("clusterPlot")
         .src =
-            data.plot_url + "?t=" + new Date().getTime();
+            (data.plot_url ?? "") +
+            "?t=" +
+            new Date().getTime();
 
     document
         .getElementById("silhouettePlot")
         .src =
-            data.silhouette_plot_url + "?t=" + new Date().getTime();
+            (data.silhouette_plot_url ?? "") +
+            "?t=" +
+            new Date().getTime();
 
     document
         .getElementById("silhouetteScore")
         .innerText =
-            Number(data.silhouette_score).toFixed(4);
+            Number(
+                data.silhouette_score ?? 0
+            ).toFixed(4);
 
     document
         .getElementById("bestKText")
         .innerText =
-            data.best_k;
+            data.best_k ?? 3;
 
-    tabloyuDoldur(data.customers);
+    tabloyuDoldur(
+        data.customers ?? []
+    );
 
     document
         .getElementById("downloadLinks")
         .innerHTML = `
 
-            <a href="${data.excel_1}"
-               class="btn btn-sm btn-outline-success w-100 mb-2">
+            <a href="${data.excel_1 ?? '#'}"
+               class="btn btn-sm btn-outline-success w-100 mb-2"
+               target="_blank">
 
                 Kümeleme Sonuçları
 
             </a>
 
-            <a href="${data.excel_2}"
-               class="btn btn-sm btn-outline-success w-100">
+            <a href="${data.excel_2 ?? '#'}"
+               class="btn btn-sm btn-outline-success w-100"
+               target="_blank">
 
                 Cluster Özeti
 
