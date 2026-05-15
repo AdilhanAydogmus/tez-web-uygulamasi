@@ -8,8 +8,8 @@ from copy import deepcopy
 DATA_EXCEL_PATH = "60eczaneküçükçekmece.xlsx"
 SEGMENT_EXCEL_PATH = "musteri_kumeleme_sonuclari.xlsx"
 
-OUTPUT_TXT = "matheuristic_sonuc.txt"
-OUTPUT_EXCEL = "matheuristic_sonuc.xlsx"
+OUTPUT_TXT = "outputs/matheuristic_sonuc.txt"
+OUTPUT_EXCEL = "outputs/matheuristic_sonuc.xlsx"
 
 DEPOT = "1"
 SPEED = 80
@@ -31,8 +31,8 @@ SERVICE_FINISH = {
     "s4": 1440.0
 }
 SEGMENT_SKORLARI = {
-    "Altin": 10.0,
-    "Gumus": 2.0,
+    "Altin": 1000.0,
+    "Gumus": 15.0,
     "Bronz": 1.0
 }
 
