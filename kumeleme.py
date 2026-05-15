@@ -648,6 +648,15 @@ def silhouette_grafigi_ciz(
             score = 0
 
         scores.append(score)
+        scores = np.nan_to_num(scores, nan=0.0)
+
+    if len(scores) == 0:
+
+        return (
+            os.path.join(plot_dir, "silhouette_plot.png"),
+            3,
+            0.0
+        )
 
     best_index = np.argmax(scores)
 
