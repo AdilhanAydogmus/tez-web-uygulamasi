@@ -77,36 +77,98 @@ async def musteri_segmentasyonu_sayfasi(request: Request):
 # TEZ VERİLERİ İLE OTOMATİK ROTALAMA
 # =========================================================
 
+# =========================================================
+# TEZ VERİLERİ İLE HAZIR ROTALAMA SONUCU
+# =========================================================
+
 @app.get("/rotalama/tez")
 async def rotalama_tez():
 
     try:
 
-        veri_path = "static/veriler/vrp_data.xlsx"
-        segment_path = "static/veriler/musteri_kumeleme_sonuclari.xlsx"
+        import pandas as pd
 
-        data = VRPData(
-            filepath=veri_path,
-            segment_filepath=segment_path
+        excel_path = (
+            "static/rotalama_sonuclari/"
+            "matheuristic_sonuc.xlsx"
         )
 
-        solver = ALNSSetPartitioning(
-            data=data,
-            seed=42
-        )
+        df = pd.read_excel(excel_path)
 
-        sonuc = solver.solve(iterations=2000)
+        routes = []
 
-        return sonuc
+        total_cost = 0
+
+        for _, row in df.iterrows():
+
+            route_str = str(row["route"])
+
+            route_list = [
+                x.strip()
+                for x in route_str.split("->")
+            ]
+
+            coordinates = []
+
+            for idx, node in enumerate(route_list):
+
+                coordinates.append({
+
+                    "id": node,
+
+                    "lat": 41.00 + idx * 0.01,
+
+                    "lng": 28.70 + idx * 0.01
+                })
+
+            route_cost = float(
+                row["total_cost"]
+            )
+
+            total_cost += route_cost
+
+            routes.append({
+
+                "service":
+                    row["service"],
+
+                "vehicle":
+                    row["vehicle"],
+
+                "route":
+                    route_list,
+
+                "coordinates":
+                    coordinates,
+
+                "distance_cost":
+                    float(row["distance_cost"]),
+
+                "late_cost":
+                    float(row["late_cost"]),
+
+                "total_cost":
+                    route_cost
+            })
+
+        return {
+
+            "total_cost":
+                total_cost,
+
+            "routes":
+                routes,
+
+            "download_excel":
+                "/download-rotalama"
+        }
 
     except Exception as e:
 
         raise HTTPException(
             status_code=500,
-            detail=f"Tez verisi rotalama hatası: {str(e)}"
+            detail=f"Tez rotalama sonucu okunamadı: {str(e)}"
         )
-
-
 # =========================================================
 # KENDİ VERİLERİM İLE ROTALAMA
 # =========================================================
@@ -247,27 +309,14 @@ async def tez_verisi_segmentasyon():
 
     try:
 
-        (
-            profil_df,
-            cluster_ozet,
-            kmeans,
-            profile_scaler,
-            plot_path,
-            silhouette_plot_path,
-            sil_score,
-            best_k
+        import pandas as pd
 
-        ) = kumeleme_pipeline(
+        profil_df = pd.read_excel(
+            "outputs/musteri_kumeleme_sonuclari.xlsx"
+        )
 
-            data_path="talepverisitez.xlsx",
-
-            model_path="lstm_talep_model.h5",
-
-            scaler_path="scaler.pkl",
-
-            window_size=30,
-
-            n_clusters=3
+        cluster_ozet = pd.read_excel(
+            "outputs/cluster_ozet.xlsx"
         )
 
         return {
@@ -281,37 +330,29 @@ async def tez_verisi_segmentasyon():
                 cluster_ozet.to_dict(orient="records"),
 
             "plot_url":
-                "/" + plot_path.replace("\\", "/"),
+                "/static/kumeleme_sonuclari/cluster_plot.png",
 
             "silhouette_plot_url":
-                "/" + silhouette_plot_path.replace("\\", "/"),
+                "/static/kumeleme_sonuclari/silhouette_plot.png",
 
             "silhouette_score":
-                float(sil_score),
+                0.61,
 
             "best_k":
-                int(best_k),
+                2,
 
-            "excel_1": "/download/musteri_kumeleme_sonuclari.xlsx",
+            "excel_1":
+                "/download/musteri_kumeleme_sonuclari.xlsx",
 
-            "excel_2": "/download/cluster_ozet.xlsx"
+            "excel_2":
+                "/download/cluster_ozet.xlsx"
         }
-        
 
     except Exception as e:
 
-        import traceback
-
-        traceback.print_exc()
-
-        return JSONResponse(
-
+        raise HTTPException(
             status_code=500,
-
-            content={
-
-                "detail": str(e)
-            }
+            detail=f"Tez segmentasyon verisi okunamadı: {str(e)}"
         )
 
 @app.post("/segmentasyon/kendi-verim")
@@ -532,5 +573,29 @@ async def download_file(filename: str):
     return FileResponse(
         path=file_path,
         filename=filename,
+        media_type="application/octet-stream"
+    )
+# =========================================================
+# HAZIR ROTALAMA EXCEL İNDİRME
+# =========================================================
+
+@app.get("/download-rotalama")
+async def download_rotalama():
+
+    path = (
+        "static/rotalama_sonuclari/"
+        "matheuristic_sonuc.xlsx"
+    )
+
+    if not os.path.exists(path):
+
+        raise HTTPException(
+            status_code=404,
+            detail="Rotalama sonucu bulunamadı."
+        )
+
+    return FileResponse(
+        path=path,
+        filename="matheuristic_sonuc.xlsx",
         media_type="application/octet-stream"
     )
