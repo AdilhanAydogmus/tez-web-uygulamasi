@@ -750,56 +750,135 @@ function drawRoutes(result){
 
         routeData.coordinates.forEach((point,pidx)=>{
 
-            latlngs.push([
+    latlngs.push([
+        point.lat,
+        point.lng
+    ]);
+
+    allPoints.push([
+        point.lat,
+        point.lng
+    ]);
+
+    if(point.id !== "1"){
+
+        customerSet.add(point.id);
+    }
+
+    // =====================================================
+    // DEPOT
+    // =====================================================
+
+    if(pidx===0){
+
+        const depotMarker =
+            L.marker([
                 point.lat,
                 point.lng
-            ]);
+            ])
+            .addTo(map);
 
-            allPoints.push([
-                point.lat,
-                point.lng
-            ]);
+        depotMarker.bindPopup(`
 
-            if(point.id !== "1"){
+            <b>ANA DEPO</b><br>
 
-                customerSet.add(point.id);
+            <b>Servis:</b>
+            ${routeData.service}<br>
+
+            <b>Araç:</b>
+            ${routeData.vehicle}<br>
+
+            <b>Koordinat:</b><br>
+
+            ${point.lat},
+            ${point.lng}
+
+        `);
+
+        routeLayers.push(
+            depotMarker
+        );
+
+    }
+
+    // =====================================================
+    // MÜŞTERİLER
+    // =====================================================
+
+    else if(
+        pidx !==
+        routeData.coordinates.length-1
+    ){
+
+        const marker =
+            L.circleMarker(
+                [
+                    point.lat,
+                    point.lng
+                ],
+                {
+                    radius:7,
+
+                    color:color,
+
+                    fillColor:color,
+
+                    fillOpacity:0.9,
+
+                    weight:2
+                }
+            )
+            .addTo(map);
+
+        marker.bindPopup(`
+
+            <div style="
+                min-width:180px;
+                font-size:14px;
+            ">
+
+                <h6 style="
+                    margin-bottom:8px;
+                    color:${color};
+                    font-weight:bold;
+                ">
+
+                    Müşteri ${point.id}
+
+                </h6>
+
+                <b>Servis:</b>
+                ${routeData.service}<br>
+
+                <b>Araç:</b>
+                ${routeData.vehicle}<br>
+
+                <b>Mesafe Maliyeti:</b>
+                ${routeData.distance_cost.toFixed(2)}<br>
+
+                <b>Late Maliyeti:</b>
+                ${routeData.late_cost.toFixed(2)}<br>
+
+                <b>Toplam Rota:</b>
+                ${routeData.total_cost.toFixed(2)}
+
+            </div>
+
+        `);
+
+        marker.bindTooltip(
+
+            `Müşteri ${point.id}`,
+
+            {
+                permanent:false,
+                direction:"top"
             }
+        );
 
-            if(pidx===0){
-
-                const depotMarker =
-                    L.marker([
-                        point.lat,
-                        point.lng
-                    ]).addTo(map);
-
-                routeLayers.push(
-                    depotMarker
-                );
-
-            } else if(
-                pidx !==
-                routeData.coordinates.length-1
-            ){
-
-                const marker =
-                    L.circleMarker(
-                        [
-                            point.lat,
-                            point.lng
-                        ],
-                        {
-                            radius:7,
-                            color:color,
-                            fillColor:color,
-                            fillOpacity:0.9,
-                            weight:2
-                        }
-                    ).addTo(map);
-
-                routeLayers.push(marker);
-            }
-        });
+        routeLayers.push(marker);
+    }
+});
 
         const polyline =
             L.polyline(
