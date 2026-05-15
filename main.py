@@ -158,7 +158,8 @@ async def rotalama_motoru(
             "dosya_adi": data.filename,
             "iterasyon": iterations,
             "rota": sonuc["routes"],
-            "maliyet": float(sonuc["total_cost"])
+            "maliyet": float(sonuc["total_cost"]),
+            "download_excel": "/download/matheuristic_sonuc.xlsx"
         }
 
     except Exception as e:
@@ -224,7 +225,9 @@ async def rotalama_kendi_verilerim(
             "dosya_adi": veri_dosyasi.filename,
             "iterasyon": iterations,
             "rota": sonuc["routes"],
-            "maliyet": float(sonuc["total_cost"])
+            "maliyet": float(sonuc["total_cost"]),
+            "download_excel":
+        "/download/matheuristic_sonuc.xlsx"
         }
 
     except Exception as e:
@@ -289,11 +292,9 @@ async def tez_verisi_segmentasyon():
             "best_k":
                 int(best_k),
 
-            "excel_1":
-                "/outputs/musteri_kumeleme_sonuclari.xlsx",
+            "excel_1": "/download/musteri_kumeleme_sonuclari.xlsx",
 
-            "excel_2":
-                "/outputs/cluster_ozet.xlsx"
+            "excel_2": "/download/cluster_ozet.xlsx"
         }
         
 
