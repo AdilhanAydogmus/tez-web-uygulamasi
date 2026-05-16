@@ -1,0 +1,84 @@
+ALNS + SET PARTITIONING MATHEURISTIC SONUCU
+============================================================
+
+Amaç Fonksiyonu: Mesafe maliyeti + score * Late
+Toplam Z = 1613.4990
+
+Servis: s1
+------------------------------------------------------------
+Araç: 1
+Rota: 1->61->38->15->54->23->30->27->1
+Mesafe maliyeti: 90.1740
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 90.1740
+
+Araç: 2
+Rota: 1->41->39->35->13->14->19->16->21->28->18->59->60->52->58->55->51->1
+Mesafe maliyeti: 231.3060
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 231.3060
+
+Araç: 3
+Rota: 1->36->37->31->11->46->49->42->48->45->7->26->25->1
+Mesafe maliyeti: 139.3080
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 139.3080
+
+s1 toplam maliyet: 460.7880
+
+Servis: s2
+------------------------------------------------------------
+Araç: 1
+Rota: 1->38->41->14->19->12->32->17->20->28->18->59->52->15->54->50->40->1
+Mesafe maliyeti: 245.0430
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 245.0430
+
+Araç: 3
+Rota: 1->25->22->29->8->9->7->44->43->2->10->4->5->6->24->56->33->1
+Mesafe maliyeti: 192.3180
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 192.3180
+
+s2 toplam maliyet: 437.3610
+
+Servis: s3
+------------------------------------------------------------
+Araç: 1
+Rota: 1->36->40->12->13->20->17->16->60->59->58->53->57->27->30->24->56->29->37->1
+Mesafe maliyeti: 135.0330
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 135.0330
+
+Araç: 3
+Rota: 1->34->31->9->6->46->3->10->2->49->44->48->43->45->47->7->26->25->22->1
+Mesafe maliyeti: 159.4860
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 159.4860
+
+s3 toplam maliyet: 294.5190
+
+Servis: s4
+------------------------------------------------------------
+Araç: 1
+Rota: 1->61->1
+Mesafe maliyeti: 12.7110
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 12.7110
+
+Araç: 2
+Rota: 1->39->35->13->19->32->17->16->21->20->18->52->55->53->51->50->54->6->5->11->46->4->3->10->23->24->33->1
+Mesafe maliyeti: 278.2170
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 278.2170
+
+Araç: 3
+Rota: 1->57->27->8->9->2->49->44->48->43->47->42->26->31->37->34->1
+Mesafe maliyeti: 129.9030
+Score*Late maliyeti: 0.0000
+Toplam rota maliyeti: 129.9030
+
+s4 toplam maliyet: 420.8310
+
+============================================================
+GENEL TOPLAM Z = 1613.4990
